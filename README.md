@@ -2,7 +2,7 @@
 
 ![](./screenshot.png)
 
-Chaosmap proxy for map.chaoszone.cs
+Chaosmap proxy for map.chaoszone.cz
 
 ## Install
 
