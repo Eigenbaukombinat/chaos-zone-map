@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ChaosZone Map</title>
+  </head>
+  <body>
+    <script src="./proxy/maplibre-gl/dist/maplibre-gl.js"></script>
+    <link
+      href="./proxy/maplibre-gl/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+
+    <div id="map" style="width: 100%; height: 90vh"></div>
+
+    <script src="./scripts/map.js?l=6"></script>
+    <script>
+      const map = new maplibregl.Map({
+          style: "./scripts/mapstyle.json",
+          center: [12.318427099380749, 51.323676093687546],
+          zoom: 7,
+          container: "map",
+      });
+      map.on('load', () => {
+        initMap(map);
+      });
+      
+    </script>
+
+  </body>
+</html>
