@@ -6,9 +6,18 @@ Chaosmap proxy for map.chaoszone.cz
 
 ## Install
 
-- install python on the system
-- `pip install -r requirements.txt`
+- Check out the code, change into the directory
+
+`git clone https://github.com/Eigenbaukombinat/chaos-zone-map.git && cd chaos-zone-map`
+
+- Create a virtual environment 
+
+`python3 -m venv`
+
+- Install dependencies
+
+`pip install -r requirements.txt`
 
 ## Start
 
-- `flask --app chaosmap run`
+- `bin/flask --app chaosmap run`

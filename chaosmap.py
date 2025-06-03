@@ -1,30 +1,19 @@
 from flask import Flask, render_template, Response, abort, request, send_file, jsonify
+from flask_caching import Cache
 import requests
 import gzip
 import os
-import time
-import threading
-
+from scripts import MAP_JS, MAPSTYLE_JSON
 PROXY_TARGETS = {
     "tiles": "https://tiles.openfreemap.org/",
     "maplibre-gl": "https://unpkg.com/maplibre-gl@5.1.0/",
-    "spaceapi": "https://api.spaceapi.io/"
 }
 
 SCRIPTS_DIR = os.path.join(os.path.dirname(__file__), "scripts")
 
-# Cache-Variablen
-_spaceapi_cache = {
-    "timestamp": 0,
-    "data": None
-}
-_cache_lock = threading.Lock()
-
-PROXY_CACHE = {}
-PROXY_CACHE_LOCK = threading.Lock()
-PROXY_CACHE_DURATION = 24 * 60 * 60  # 24 Stunden in Sekunden
-
 app = Flask(__name__)
+app.config['CACHE_TYPE'] = 'simple'  # Für einfaches In-Memory-Caching
+cache = Cache(app)
 
 @app.route("/")
 def index():
@@ -33,47 +22,32 @@ def index():
 
 @app.route("/scripts/<path:filename>")
 def scripts_with_url(filename):
-    file_path = os.path.join(SCRIPTS_DIR, filename)
-    if not os.path.isfile(file_path):
-        abort(404, description="Datei nicht gefunden")
-
-    # Für json, js, css: [URL] ersetzen
-    if filename.endswith(('.json', '.js', '.css')):
-        with open(file_path, "r", encoding="utf-8") as f:
-            content = f.read()
+    if filename == 'mapstyle.json':
+        content = MAPSTYLE_JSON
+        mimetype = "application/json"
+    elif filename == 'map.js':
         host_url = request.host_url.rstrip('/')
-        content = content.replace("[URL]", host_url)
-        if filename.endswith('.json'):
-            mimetype = "application/json"
-        elif filename.endswith('.js'):
-            mimetype = "application/javascript"
-        elif filename.endswith('.css'):
-            mimetype = "text/css"
-        else:
-            mimetype = "text/plain"
-        return Response(content, mimetype=mimetype)
+        content = MAP_JS
+        mimetype = "application/javascript"
     else:
-        # Alle anderen Dateitypen direkt ausliefern
-        return send_file(file_path)
+        abort(404, "Invalid filename")
+
+    content = content.replace("[URL]", host_url)
+    return Response(content, mimetype=mimetype)
+
+
     
 @app.route("/spaceapi")
+@cache.cached(timeout=60)  # Cache für 60 Sekunden
 def spaceapi_filtered():
     url = "https://api.spaceapi.io/"
-    now = time.time()
-
-    with _cache_lock:
-        # Prüfen, ob Cache älter als 60 Sekunden ist
-        if _spaceapi_cache["data"] is None or now - _spaceapi_cache["timestamp"] > 60:
-            try:
-                resp = requests.get(url, timeout=10)
-                resp.raise_for_status()
-                data = resp.json()
-                _spaceapi_cache["data"] = data
-                _spaceapi_cache["timestamp"] = now
-            except Exception as e:
-                abort(502, description=f"Fehler beim Abrufen der Daten: {e}")
-        else:
-            data = _spaceapi_cache["data"]
+    
+    try:
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception as e:
+        abort(502, description=f"Fehler beim Abrufen der Daten: {e}")
 
     # Filter anwenden
     filtered = [
@@ -155,37 +129,31 @@ def proxy_route(proxy, file):
     target_url = base_url + file
     proxy_base_url = request.url_root.rstrip('/')
 
-    cache_key = f"{proxy}:{file}"
-    now = time.time()
-
+    # Für cacheable Dateien, Cache prüfen
     if is_cacheable(file):
-        with PROXY_CACHE_LOCK:
-            cache_entry = PROXY_CACHE.get(cache_key)
-            if cache_entry and now - cache_entry['timestamp'] < PROXY_CACHE_DURATION:
-                # Aus Cache zurückgeben
-                cached_resp = cache_entry['response']
-                return Response(
-                    cached_resp['body'],
-                    status=cached_resp['status'],
-                    headers=cached_resp['headers']
-                )
+        cache_key = f"proxy_{proxy}_{file}"
+        cached_response = cache.get(cache_key)
+        if cached_response:
+            return Response(
+                cached_response['body'],
+                status=cached_response['status'],
+                headers=cached_response['headers']
+            )
 
     try:
         forward_headers = build_forward_headers()
-        resp = requests.get(target_url, headers=forward_headers, stream=True)
+        resp = requests.get(target_url, headers=forward_headers, stream=True, timeout=10)
         flask_resp = format_proxy_response(resp, proxy, proxy_base_url, base_url.rstrip('/'))
 
         if is_cacheable(file):
             # Antwort für 24h cachen
-            with PROXY_CACHE_LOCK:
-                PROXY_CACHE[cache_key] = {
-                    'timestamp': now,
-                    'response': {
-                        'body': flask_resp.get_data(),
-                        'status': flask_resp.status_code,
-                        'headers': flask_resp.headers
-                    }
-                }
+            cache_key = f"proxy_{proxy}_{file}"
+            cache.set(cache_key, {
+                'body': flask_resp.get_data(),
+                'status': flask_resp.status_code,
+                'headers': dict(flask_resp.headers)
+            }, timeout=24*60*60)  # 24 Stunden
+            
         return flask_resp
     except requests.RequestException as e:
         abort(502, description=f"Fehler beim Weiterleiten: {e}")
