@@ -1016,7 +1016,7 @@ MAPSTYLE_JSON = '''
         "text-field": [
           "case",
           ["has", "name:nonlatin"],
-          ["concat", ["get", "name:latin"], "\n", ["get", "name:nonlatin"]],
+          ["concat", ["get", "name:latin"], "\\n", ["get", "name:nonlatin"]],
           ["coalesce", ["get", "name_en"], ["get", "name"]]
         ],
         "text-font": ["Noto Sans Italic"],
@@ -1273,7 +1273,7 @@ MAPSTYLE_JSON = '''
         "text-field": [
           "case",
           ["has", "name:nonlatin"],
-          ["concat", ["get", "name:latin"], "\n", ["get", "name:nonlatin"]],
+          ["concat", ["get", "name:latin"], "\\n", ["get", "name:nonlatin"]],
           ["coalesce", ["get", "name_en"], ["get", "name"]]
         ],
         "text-font": ["Noto Sans Regular"],
@@ -1307,7 +1307,7 @@ MAPSTYLE_JSON = '''
         "text-field": [
           "case",
           ["has", "name:nonlatin"],
-          ["concat", ["get", "name:latin"], "\n", ["get", "name:nonlatin"]],
+          ["concat", ["get", "name:latin"], "\\n", ["get", "name:nonlatin"]],
           ["coalesce", ["get", "name_en"], ["get", "name"]]
         ],
         "text-font": ["Noto Sans Italic"],
@@ -1340,7 +1340,7 @@ MAPSTYLE_JSON = '''
         "text-field": [
           "case",
           ["has", "name:nonlatin"],
-          ["concat", ["get", "name:latin"], "\n", ["get", "name:nonlatin"]],
+          ["concat", ["get", "name:latin"], "\\n", ["get", "name:nonlatin"]],
           ["coalesce", ["get", "name_en"], ["get", "name"]]
         ],
         "text-font": ["Noto Sans Regular"],
@@ -1379,7 +1379,7 @@ MAPSTYLE_JSON = '''
         "text-field": [
           "case",
           ["has", "name:nonlatin"],
-          ["concat", ["get", "name:latin"], "\n", ["get", "name:nonlatin"]],
+          ["concat", ["get", "name:latin"], "\\n", ["get", "name:nonlatin"]],
           ["coalesce", ["get", "name_en"], ["get", "name"]]
         ],
         "text-font": ["Noto Sans Regular"],
@@ -1414,7 +1414,7 @@ MAPSTYLE_JSON = '''
         "text-field": [
           "case",
           ["has", "name:nonlatin"],
-          ["concat", ["get", "name:latin"], "\n", ["get", "name:nonlatin"]],
+          ["concat", ["get", "name:latin"], "\\n", ["get", "name:nonlatin"]],
           ["coalesce", ["get", "name_en"], ["get", "name"]]
         ],
         "text-font": ["Noto Sans Italic"],
@@ -1451,7 +1451,7 @@ MAPSTYLE_JSON = '''
         "text-field": [
           "case",
           ["has", "name:nonlatin"],
-          ["concat", ["get", "name:latin"], "\n", ["get", "name:nonlatin"]],
+          ["concat", ["get", "name:latin"], "\\n", ["get", "name:nonlatin"]],
           ["coalesce", ["get", "name_en"], ["get", "name"]]
         ],
         "text-font": ["Noto Sans Regular"],
@@ -1496,7 +1496,7 @@ MAPSTYLE_JSON = '''
         "text-field": [
           "case",
           ["has", "name:nonlatin"],
-          ["concat", ["get", "name:latin"], "\n", ["get", "name:nonlatin"]],
+          ["concat", ["get", "name:latin"], "\\n", ["get", "name:nonlatin"]],
           ["coalesce", ["get", "name_en"], ["get", "name"]]
         ],
         "text-font": ["Noto Sans Bold"],
@@ -1538,7 +1538,7 @@ MAPSTYLE_JSON = '''
         "text-field": [
           "case",
           ["has", "name:nonlatin"],
-          ["concat", ["get", "name:latin"], "\n", ["get", "name:nonlatin"]],
+          ["concat", ["get", "name:latin"], "\\n", ["get", "name:nonlatin"]],
           ["coalesce", ["get", "name_en"], ["get", "name"]]
         ],
         "text-font": ["Noto Sans Bold"],
@@ -1568,7 +1568,7 @@ MAPSTYLE_JSON = '''
         "text-field": [
           "case",
           ["has", "name:nonlatin"],
-          ["concat", ["get", "name:latin"], "\n", ["get", "name:nonlatin"]],
+          ["concat", ["get", "name:latin"], "\\n", ["get", "name:nonlatin"]],
           ["coalesce", ["get", "name_en"], ["get", "name"]]
         ],
         "text-font": ["Noto Sans Bold"],
@@ -1598,7 +1598,7 @@ MAPSTYLE_JSON = '''
         "text-field": [
           "case",
           ["has", "name:nonlatin"],
-          ["concat", ["get", "name:latin"], "\n", ["get", "name:nonlatin"]],
+          ["concat", ["get", "name:latin"], "\\n", ["get", "name:nonlatin"]],
           ["coalesce", ["get", "name_en"], ["get", "name"]]
         ],
         "text-font": ["Noto Sans Bold"],

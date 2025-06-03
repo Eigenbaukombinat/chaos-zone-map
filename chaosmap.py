@@ -31,7 +31,7 @@ def scripts_with_url(filename):
     else:
         abort(404, "Invalid filename")
     
-    host_url = request.host_url.rstrip('/')
+    host_url = 'https://map.chaoszone.cz'
     content = content.replace("[URL]", host_url)
     return Response(content, mimetype=mimetype)
 
