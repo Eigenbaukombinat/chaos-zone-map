@@ -26,12 +26,12 @@ def scripts_with_url(filename):
         content = MAPSTYLE_JSON
         mimetype = "application/json"
     elif filename == 'map.js':
-        host_url = request.host_url.rstrip('/')
         content = MAP_JS
         mimetype = "application/javascript"
     else:
         abort(404, "Invalid filename")
-
+    
+    host_url = request.host_url.rstrip('/')
     content = content.replace("[URL]", host_url)
     return Response(content, mimetype=mimetype)
 
